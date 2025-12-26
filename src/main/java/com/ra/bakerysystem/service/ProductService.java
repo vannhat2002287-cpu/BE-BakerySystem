@@ -1,10 +1,13 @@
 package com.ra.bakerysystem.service;
 
-import com.ra.bakerysystem.model.DTO.ProductDTO;
+import com.ra.bakerysystem.model.DTO.ProductRequest;
+import com.ra.bakerysystem.model.entity.Product;
+
 import java.util.List;
 
 public interface ProductService {
-    List<ProductDTO> findAllActive();
-    List<ProductDTO> findByCategory(Long categoryId);
+    List<ProductRequest> findByCategory(Long categoryId);
+    Product save(ProductRequest productRequest, String imagePath, Long id);
+
 }
 

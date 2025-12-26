@@ -1,6 +1,7 @@
 package com.ra.bakerysystem.model.DTO;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.ra.bakerysystem.common.ProductType;
 import lombok.*;
 
 @Data
@@ -8,12 +9,12 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ProductDTO {
+public class ProductRequest {
 
     private Long id;
     private String name;
     private Integer price;
-    private String type;
+    private ProductType type;
     private Boolean alcoholic;
     private String imageUrl;
     private Boolean active;

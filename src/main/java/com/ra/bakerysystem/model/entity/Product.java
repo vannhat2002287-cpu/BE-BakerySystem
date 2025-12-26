@@ -7,6 +7,8 @@ import com.ra.bakerysystem.common.ProductType;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.UUID;
+
 @Entity
 @Table(name = "products")
 @Getter
@@ -21,6 +23,7 @@ public class Product {
     @Column(name = "product_id")
     @JsonProperty("product_id")
     private Long id;
+   private String productCode;
 
     @Column(nullable = false)
     private String name;
@@ -36,9 +39,9 @@ public class Product {
     @JsonProperty("is_alcoholic")
     private Boolean alcoholic = false;
 
-    @Column(name = "image_url", columnDefinition = "LONGTEXT")
-    @JsonProperty("image_url")
-    private String imageUrl;
+    @Column(name = "image", columnDefinition = "LONGTEXT")
+    @JsonProperty("image")
+    private String img;
 
     @Column(name = "is_active")
     @JsonProperty("is_active")
@@ -58,4 +61,8 @@ public class Product {
     @OneToOne(mappedBy = "product", cascade = CascadeType.ALL)
     @JsonIgnore // Inventory thường được quản lý ở API riêng hoặc trả về riêng
     private Inventory inventory;
+
+    public static String generateOrderCode() {
+        return "PD" + UUID.randomUUID().toString().replaceAll("-", "").substring(0, 8).toUpperCase();
+    }
 }
