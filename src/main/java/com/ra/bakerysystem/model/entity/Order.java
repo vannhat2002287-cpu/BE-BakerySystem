@@ -19,10 +19,10 @@ import java.util.List;
 public class Order {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "order_id", length = 50)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "order_id")
     @JsonProperty("order_id")
-    private String id;
+    private Long id;
 
     @Column(name = "order_time", updatable = false) // Không cho phép cập nhật lại thời gian sau khi đã tạo
     @JsonProperty(value = "order_time", access = JsonProperty.Access.READ_ONLY) // Frontend chỉ đọc, không được ghi đè

@@ -13,7 +13,7 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class OrderResponseDTO {
 
-    private String orderId;
+    private Long orderId;
     private LocalDateTime orderTime;
     private String orderType;
     private Integer totalAmount;

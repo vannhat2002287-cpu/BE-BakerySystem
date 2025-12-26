@@ -10,12 +10,12 @@ import lombok.*;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProductDTO {
 
-    private String id;
+    private Long id;
     private String name;
     private Integer price;
     private String type;
     private Boolean alcoholic;
     private String imageUrl;
     private Boolean active;
-    private String categoryId;
+    private Long categoryId;
 }

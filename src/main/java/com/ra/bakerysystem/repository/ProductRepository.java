@@ -4,9 +4,9 @@ import com.ra.bakerysystem.model.entity.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
-public interface ProductRepository extends JpaRepository<Product, String> {
+public interface ProductRepository extends JpaRepository<Product, Long> {
 
     List<Product> findByActiveTrue();
 
-    List<Product> findByCategory_IdAndActiveTrue(String categoryId);
+    List<Product> findByCategory_IdAndActiveTrue(Long categoryId);
 }

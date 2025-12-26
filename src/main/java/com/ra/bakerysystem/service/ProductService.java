@@ -5,6 +5,6 @@ import java.util.List;
 
 public interface ProductService {
     List<ProductDTO> findAllActive();
-    List<ProductDTO> findByCategory(String categoryId);
+    List<ProductDTO> findByCategory(Long categoryId);
 }
 

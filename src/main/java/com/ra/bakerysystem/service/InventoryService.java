@@ -6,7 +6,7 @@ import java.util.List;
 public interface InventoryService {
 
     List<InventoryDTO> getAll();
-    void deductStock(String productId, int quantity);
+    void deductStock(Long productId, int quantity);
 
 }
 

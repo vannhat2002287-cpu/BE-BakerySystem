@@ -14,10 +14,10 @@ import lombok.*;
 public class Category {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "category_id", length = 50)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "category_id")
     @JsonProperty("category_id") // Để khớp với file type.ts
-    private String id;
+    private Long id;
 
     @Column(nullable = false, unique = true) // Tên category không được trùng
     private String name;

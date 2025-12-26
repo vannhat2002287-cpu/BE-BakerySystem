@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class InventoryDTO {
 
-    private String productId;
+    private Long productId;
     private Integer currentQuantity;
     private Integer minThreshold;
     private LocalDateTime lastUpdated;

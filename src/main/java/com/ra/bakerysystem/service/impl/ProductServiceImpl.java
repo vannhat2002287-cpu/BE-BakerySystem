@@ -24,7 +24,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductDTO> findByCategory(String categoryId) {
+    public List<ProductDTO> findByCategory(Long categoryId) {
         return productRepository.findByCategory_IdAndActiveTrue(categoryId)
                 .stream()
                 .map(this::convertToDTO)

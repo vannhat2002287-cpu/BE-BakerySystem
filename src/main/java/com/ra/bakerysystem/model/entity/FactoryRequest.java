@@ -19,11 +19,11 @@ import java.time.LocalDateTime;
 public class FactoryRequest {
 
     @Id
-    @Column(name = "request_id", length = 50)
-    private String requestId;
+    @Column(name = "request_id")
+    private Long requestId;
 
     @Column(name = "product_id", nullable = false)
-    private String productId;
+    private Long productId;
 
     @Column(name = "product_name", nullable = false)
     private String productName;

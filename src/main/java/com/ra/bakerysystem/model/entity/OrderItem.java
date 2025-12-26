@@ -42,7 +42,7 @@ public class OrderItem {
 
     // Trả về product_id dưới dạng String để khớp với types.ts
     @JsonGetter("product_id")
-    public String getProductId() {
+    public Long getProductId() {
         return product != null ? product.getId() : null;
     }
 

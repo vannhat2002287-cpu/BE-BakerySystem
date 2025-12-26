@@ -19,7 +19,7 @@ public class Inventory {
     @Id
     @Column(name = "product_id")
     @JsonProperty("product_id") // Khớp với Inventory interface trong types.ts
-    private String productId;
+    private Long productId;
 
     @OneToOne
     @MapsId
