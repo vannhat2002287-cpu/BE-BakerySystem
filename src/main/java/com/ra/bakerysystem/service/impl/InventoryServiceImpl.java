@@ -24,7 +24,7 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
     @Override
-    public void deductStock(String productId, int quantity) {
+    public void deductStock(Long productId, int quantity) {
 
         Inventory inventory = inventoryRepository.findById(productId)
                 .orElseThrow(() ->

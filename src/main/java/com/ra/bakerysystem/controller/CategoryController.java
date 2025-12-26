@@ -10,12 +10,13 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/categories")
+@RequestMapping("/api/v1/categories")
 @RequiredArgsConstructor
 public class CategoryController {
 
     private final CategoryService categoryService;
 
+    // Hiển thị tất cả các Categories
     @GetMapping
     public List<CategoryDTO> getAll() {
         return categoryService.findAll();

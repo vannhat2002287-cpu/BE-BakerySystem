@@ -9,6 +9,6 @@ import lombok.*;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CategoryDTO {
-    private String id;
+    private Long id;
     private String name;
 }

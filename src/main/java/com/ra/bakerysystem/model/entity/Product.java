@@ -17,10 +17,10 @@ import lombok.*;
 public class Product {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "product_id", length = 50)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "product_id")
     @JsonProperty("product_id")
-    private String id;
+    private Long id;
 
     @Column(nullable = false)
     private String name;
@@ -51,7 +51,7 @@ public class Product {
 
     // Helper method để trả về category_id đúng như frontend cần
     @JsonGetter("category_id")
-    public String getCategoryId() {
+    public Long getCategoryId() {
         return category != null ? category.getId() : null;
     }
 
