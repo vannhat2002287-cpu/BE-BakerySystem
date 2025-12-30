@@ -61,5 +61,10 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body(product);
     }
 
+    @GetMapping("/all")
+    public List<Product> getAllProducts() {
+        return productService.findAllActiveProducts();
+    }
+
 }
 

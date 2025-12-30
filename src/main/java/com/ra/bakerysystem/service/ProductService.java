@@ -8,6 +8,7 @@ import java.util.List;
 public interface ProductService {
     List<ProductRequest> findByCategory(Long categoryId);
     Product save(ProductRequest productRequest, String imagePath, Long id);
+    List<Product> findAllActiveProducts();
 
 }
 

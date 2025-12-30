@@ -15,7 +15,7 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     // GET: lấy tất cả category
-    @GetMapping
+    @GetMapping("/all")
     public List<Category> getAll() {
         return categoryService.findAll();
     }
