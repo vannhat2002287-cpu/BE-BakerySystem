@@ -16,6 +16,14 @@ public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
 
+    /**
+     * Lấy danh sách tất cả Category
+     * Luồng xử lý:
+     *  - Lấy danh sách Category entity từ database
+     *  - Map từng entity sang CategoryDTO
+     *  - Trả về danh sách DTO cho controller
+     * @return List<CategoryDTO> danh sách category
+     */
     @Override
     public List<CategoryDTO> getAllCategories() {
         return categoryRepository.findAll()

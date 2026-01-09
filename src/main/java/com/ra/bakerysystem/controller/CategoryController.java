@@ -13,10 +13,16 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+/**
+ * Quản lý các API liên quan đến Category (danh mục sản phẩm)
+ * Nhận request từ client và trả về dữ liệu category
+ */
+
 @RestController
 @RequestMapping("/api/v1/categories")
 @RequiredArgsConstructor
 @Tag(name = "Category API")
+
 public class CategoryController {
 
     private final CategoryService categoryService;
@@ -27,6 +33,7 @@ public class CategoryController {
             @ApiResponse(responseCode = "200", description = "Success")
     })
     public List<CategoryDTO> getAllCategories() {
+        // Gọi service để lấy toàn bộ danh sách category
         return categoryService.getAllCategories();
     }
 }

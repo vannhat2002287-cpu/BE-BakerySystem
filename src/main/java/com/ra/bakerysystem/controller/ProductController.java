@@ -12,6 +12,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+/**
+ * Quản lý các API liên quan đến Product (sản phẩm)
+ *  - Lấy danh sách sản phẩm (có filter)
+ *  - Xem chi tiết sản phẩm
+ */
+
 @RestController
 @RequestMapping("/api/v1/products")
 @RequiredArgsConstructor

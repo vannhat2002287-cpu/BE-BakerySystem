@@ -12,10 +12,16 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+/**
+ * Quản lý các API liên quan đến Analytics / Dashboard
+ * Cung cấp dữ liệu tổng hợp cho màn hình thống kê (dashboard, summary, charts)
+ */
+
 @RestController
 @RequestMapping("/api/v1/analytics")
 @RequiredArgsConstructor
 @Tag(name = "Analytics API")
+
 public class AnalyticsController {
 
     private final AnalyticsService analyticsService;
@@ -26,6 +32,7 @@ public class AnalyticsController {
             @ApiResponse(responseCode = "200", description = "Success")
     })
     public DashboardResponseDTO dashboard() {
+        // Gọi service để lấy dữ liệu dashboard
         return analyticsService.getDashboard();
     }
 }

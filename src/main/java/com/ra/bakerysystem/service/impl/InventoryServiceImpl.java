@@ -21,14 +21,22 @@ public class InventoryServiceImpl implements InventoryService {
         return inventoryRepository.findAll();
     }
 
+    /**
+     * Điều chỉnh số lượng tồn kho của một sản phẩm
+     * currentQuantity là số lượng MỚI (set trực tiếp), không phải số lượng tăng / giảm
+     */
+
     @Override
     public Inventory adjustInventory(Long productId, Integer currentQuantity) {
 
+        // Lấy inventory theo productId
         Inventory inventory = inventoryRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Inventory not found for product_id=" + productId));
 
+        // Cập nhật số lượng tồn kho mới
         inventory.setCurrentQuantity(currentQuantity);
 
+        // Lưu lại inventory sau khi cập nhật
         return inventoryRepository.save(inventory);
     }
 

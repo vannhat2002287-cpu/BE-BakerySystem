@@ -28,20 +28,32 @@ public class OrderServiceImpl implements OrderService {
     private final ProductRepository productRepository;
     private final InventoryRepository inventoryRepository;
 
+    /**
+     * Tạo mới một đơn hàng
+     *  1. Validate các rule nghiệp vụ theo thời gian
+     *  2. Tạo Order entity
+     *  3. Xử lý từng OrderItem:
+     *     - Validate product
+     *     - Check rule bán rượu
+     *     - Check & trừ tồn kho
+     *     - Snapshot dữ liệu product vào OrderItem
+     *  4. Tính tổng tiền và tiền thừa
+     *  5. Lưu Order vào database
+     */
+
     @Override
     @Transactional
     public Order createOrder(OrderRequestDTO dto) {
-
+        // Thời điểm hiện tại để validate rule theo giờ
         LocalDateTime now = LocalDateTime.now();
 
-        // 1. Validate Eat-in
+        // 1. Validate Eat-in sau 20:30
         if (dto.getOrderType() == OrderType.EAT_IN
                 && now.toLocalTime().isAfter(LocalTime.of(20, 30))) {
             throw new RuntimeException("Eat-in is not allowed after 20:30");
         }
 
         // 2. Tạo Order entity
-
         Order order = new Order();
         order.setOrderType(dto.getOrderType());
         order.setPaymentMethod(dto.getPaymentMethod());
@@ -51,7 +63,6 @@ public class OrderServiceImpl implements OrderService {
         int totalAmount = 0;
 
         // 3. Xử lý từng item
-
         for (OrderItemRequestDTO itemDTO : dto.getItems()) {
 
             // 3.1 Lấy product
@@ -60,14 +71,13 @@ public class OrderServiceImpl implements OrderService {
                             new RuntimeException("Product not found: " + itemDTO.getProductId())
                     );
 
-            // 3.2 Check rượu trước 17h
+            // 3.2 Validate không cho bán rượu trước 17:00
             if (Boolean.TRUE.equals(product.getAlcoholic())
                     && now.toLocalTime().isBefore(LocalTime.of(17, 0))) {
                 throw new RuntimeException("Alcohol is not allowed before 17:00");
             }
 
-            // 3.3 Check & trừ kho
-
+            // 3.3 Check tồn kho và trừ kho
                 Inventory inventory = inventoryRepository.findById(product.getId())
                         .orElseThrow(() ->
                                 new RuntimeException("Inventory not found for product: " + product.getId())
@@ -79,6 +89,7 @@ public class OrderServiceImpl implements OrderService {
                     );
                 }
 
+            // Trừ tồn kho
                 inventory.setCurrentQuantity(
                         inventory.getCurrentQuantity() - itemDTO.getQuantity()
                 );
@@ -95,6 +106,7 @@ public class OrderServiceImpl implements OrderService {
 
             order.getItems().add(item);
 
+            // Cộng dồn tổng tiền
             totalAmount += product.getPrice() * itemDTO.getQuantity();
         }
 
@@ -102,11 +114,11 @@ public class OrderServiceImpl implements OrderService {
         order.setTotalAmount(totalAmount);
         order.setChangeAmount(dto.getPaymentReceived() - totalAmount);
 
-        // 5. Save
-
+        // 5. Save order
         return orderRepository.save(order);
     }
 
+    // Lấy danh sách đơn hàng theo ngày
     @Override
     public List<Order> getOrdersByDate(LocalDate date, OrderType type) {
         LocalDateTime start = date.atStartOfDay();
@@ -121,6 +133,7 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.findByOrderTimeBetween(start, end);
     }
 
+    // Lấy chi tiết đơn hàng theo ID
     @Override
     public Order getOrderById(Long id) {
         return orderRepository.findById(id)

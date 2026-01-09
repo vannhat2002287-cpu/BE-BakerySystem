@@ -12,6 +12,8 @@ import java.util.List;
 
 public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
 
+    // Lấy danh sách các sản phẩm bán chạy nhất
+
     @Query("""
         SELECT oi.product.id, oi.product.name, SUM(oi.quantity)
         FROM OrderItem oi

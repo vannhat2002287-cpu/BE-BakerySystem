@@ -15,6 +15,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+/**
+ * Quản lý các API liên quan đến Order (đơn hàng)
+ *  - Tạo đơn hàng mới
+ *  - Lấy danh sách đơn hàng theo ngày và loại
+ *  - Xem chi tiết một đơn hàng
+ */
+
 @RestController
 @RequestMapping("/api/v1/orders")
 @RequiredArgsConstructor

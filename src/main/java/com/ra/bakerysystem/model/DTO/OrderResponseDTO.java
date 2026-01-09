@@ -12,7 +12,6 @@ import java.util.List;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class OrderResponseDTO {
-
     private Long orderId;
     private LocalDateTime orderTime;
     private String orderType;

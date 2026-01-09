@@ -27,17 +27,21 @@ public class AnalyticsServiceImpl implements AnalyticsService {
     @Override
     public DashboardResponseDTO getDashboard() {
 
+        // Xác định khoảng thời gian: từ đầu ngày đến cuối ngày hôm nay
         LocalDateTime start = LocalDate.now().atStartOfDay();
         LocalDateTime end = LocalDate.now().atTime(23, 59, 59);
 
+        // Tổng doanh thu trong ngày
         Integer dailySales = orderRepository.getDailySales(start, end);
+        // Tổng số đơn hàng trong ngày
         Long orderCount = orderRepository.getOrderCount(start, end);
+        // Số lượng sản phẩm đang ở mức tồn kho thấp
         Long lowStockCount = inventoryRepository.countLowStock();
 
-        // GỌI METHOD CHUNG (KHÔNG DUPLICATE LOGIC)
+        // Doanh thu theo từng giờ trong ngày
         List<Integer> hourlySales = getHourlySalesToday();
 
-        // Top 5 products
+        // Lấy top 5 sản phẩm bán chạy nhất trong ngày
         List<PopularProductDTO> popularProducts =
                 orderItemRepository.findTopProducts(PageRequest.of(0, 5))
                         .stream()
@@ -48,6 +52,7 @@ public class AnalyticsServiceImpl implements AnalyticsService {
                         ))
                         .toList();
 
+        // Build và trả về DashboardResponseDTO
         return DashboardResponseDTO.builder()
                 .dailySales(dailySales)
                 .orderCount(orderCount.intValue())
@@ -57,17 +62,20 @@ public class AnalyticsServiceImpl implements AnalyticsService {
                 .build();
     }
 
-    private List<Integer> getHourlySalesToday() {
 
+    private List<Integer> getHourlySalesToday() {
+        // Xác định ngày hiện tại
         LocalDate today = LocalDate.now();
         LocalDateTime start = today.atStartOfDay();
         LocalDateTime end = today.atTime(23, 59, 59);
 
+        // Lấy dữ liệu raw từ database (hour, totalSales)
         List<Object[]> rawData = orderRepository.getHourlySales(start, end);
 
         // Khởi tạo mảng 24 giờ = 0
         List<Integer> hourlySales = new ArrayList<>(Collections.nCopies(24, 0));
 
+        // Map dữ liệu từ query vào danh sách theo giờ
         for (Object[] row : rawData) {
             Integer hour = ((Number) row[0]).intValue();
             Integer total = ((Number) row[1]).intValue();

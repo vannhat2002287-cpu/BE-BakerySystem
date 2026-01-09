@@ -16,6 +16,8 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final ConvertImageUrl convertImageUrl;
+
+    // Lấy danh sách product với các điều kiện filter
     @Override
     public List<ProductDTO> getProducts(Long categoryId, String search, Boolean isActive) {
         return productRepository
@@ -23,12 +25,13 @@ public class ProductServiceImpl implements ProductService {
                 .stream()
                 .map(product -> {
                     ProductDTO dto = new ProductDTO(product);
-                    dto.setImageUrl(convertImageUrl.buildImageUrl(product.getImageUrl()));
+                    dto.setImageUrl(convertImageUrl.buildImageUrl(product.getImageUrl())); // Build lại image URL trước khi trả về client
                     return dto;
                 })
                 .toList();
     }
 
+    // Lấy chi tiết một product theo ID
     @Override
     public ProductDTO getProductById(Long id) {
         Product product = productRepository.findById(id)

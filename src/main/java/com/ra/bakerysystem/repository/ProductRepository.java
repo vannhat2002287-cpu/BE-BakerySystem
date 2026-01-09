@@ -9,10 +9,7 @@ import java.util.List;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-    List<Product> findByActiveTrue();
-
-    List<Product> findByCategory_IdAndActiveTrue(Long categoryId);
-
+    // Lấy danh sách sản phẩm theo các điều kiện filter
     @Query("""
         SELECT p FROM Product p
         WHERE (:categoryId IS NULL OR p.category.id = :categoryId)

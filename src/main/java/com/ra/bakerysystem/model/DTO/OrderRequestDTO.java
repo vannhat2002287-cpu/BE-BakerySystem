@@ -5,6 +5,7 @@ import com.ra.bakerysystem.common.OrderType;
 import com.ra.bakerysystem.common.PaymentMethod;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -14,6 +15,7 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class OrderRequestDTO {
     private OrderType orderType;
+    private LocalDateTime orderTime;
     private PaymentMethod paymentMethod;
     private Integer paymentReceived;
     private List<OrderItemRequestDTO> items;

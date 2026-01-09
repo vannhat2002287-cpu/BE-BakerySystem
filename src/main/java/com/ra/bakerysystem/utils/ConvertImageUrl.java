@@ -10,7 +10,7 @@ public class ConvertImageUrl {
 
     /**
      * Chuyển tên file ảnh thành URL đầy đủ
-     * @param fileName tên file ảnh (ví dụ "image.png")
+     * @param fileName tên file ảnh
      * @return URL đầy đủ để client view ảnh
      */
     public String buildImageUrl(String fileName) {
