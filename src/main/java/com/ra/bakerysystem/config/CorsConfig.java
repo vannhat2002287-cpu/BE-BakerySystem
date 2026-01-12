@@ -6,6 +6,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+// CorsConfig dùng để cấu hình CORS cho các API trong hệ thống
+// CORS cho phép frontend (ví dụ: React hiện tại bên frontend) gọi API từ backend khi khác domain/port.
 @Configuration
 public class CorsConfig {
     @Bean

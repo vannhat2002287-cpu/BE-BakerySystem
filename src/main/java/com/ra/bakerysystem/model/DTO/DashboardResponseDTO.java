@@ -8,15 +8,22 @@ import tools.jackson.databind.annotation.JsonNaming;
 
 import java.util.List;
 
+/**
+ * DashboardResponseDTO dùng để trả dữ liệu thống kê tổng hợp cho màn hình dashboard của hệ thống Bakery System.
+ * DTO này thường được sử dụng bởi:
+ *  - AnalyticsController
+ *  - Dashboard / Chart UI trên frontend
+ */
+
 @Data
 @Builder
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class DashboardResponseDTO {
 
-    private Integer dailySales;
-    private Integer orderCount;
-    private Integer lowStockCount;
+    private Integer dailySales;                      // Tổng doanh thu trong ngày
+    private Integer orderCount;                      // Tổng số đơn hàng trong ngày.
+    private Integer lowStockCount;                   // Số lượng sản phẩm đang ở mức tồn kho thấp.
 
-    private List<Integer> hourlySales;
-    private List<PopularProductDTO> popularProducts;
+    private List<Integer> hourlySales;               // Doanh thu theo từng giờ trong ngày (phục vụ biểu đồ).
+    private List<PopularProductDTO> popularProducts; // Danh sách các sản phẩm bán chạy.
 }

@@ -15,8 +15,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
- * Quản lý các API liên quan đến Category (danh mục sản phẩm)
- * Nhận request từ client và trả về dữ liệu category
+ * CategoryController quản lý các API liên quan đến danh mục sản phẩm.
+ * Giúp:
+ *  - Nhận request từ client (frontend)
+ *  - Gọi CategoryService để xử lý business logic
+ *  - Trả về dữ liệu Category dưới dạng DTO
  */
 
 @RestController
@@ -26,8 +29,17 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 public class CategoryController {
 
+    /**
+     * Service xử lý logic liên quan đến Category.
+     * Được inject thông qua constructor (Lombok @RequiredArgsConstructor).
+     */
     private final CategoryService categoryService;
 
+    /**
+     * API lấy danh sách tất cả category.
+     * URL: GET /api/v1/categories
+     * @return danh sách CategoryDTO
+     */
     @GetMapping
     @Operation(summary = "Get all categories")
     @ApiResponses({

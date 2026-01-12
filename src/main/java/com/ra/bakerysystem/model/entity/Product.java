@@ -8,6 +8,14 @@ import com.ra.bakerysystem.common.ProductType;
 import jakarta.persistence.*;
 import lombok.*;
 
+/**
+ * Product Entity đại diện cho bảng "products" trong database.
+ * Đây là entity trung tâm của hệ thống:
+ *  - Dùng cho bán hàng
+ *  - Dùng cho quản lý tồn kho
+ *  - Dùng cho báo cáo / thống kê
+ */
+
 @Entity
 @Table(name = "products")
 @Getter
@@ -21,13 +29,13 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "product_id")
     @JsonProperty("product_id")
-    private Long id;
+    private Long id;  // ID của sản phẩm (PRIMARY KEY).
 
     @Column(nullable = false)
-    private String name;
+    private String name; // Tên sản phẩm.
 
     @Column(nullable = false)
-    private Integer price;
+    private Integer price; // Giá bán hiện tại của sản phẩm
 
     @Enumerated(EnumType.STRING)
     @Column(name = "product_type")
@@ -35,28 +43,35 @@ public class Product {
 
     @Column(name = "is_alcoholic")
     @JsonProperty("is_alcoholic")
-    private Boolean alcoholic = false;
+    private Boolean alcoholic = false; // Đánh dấu mặc định là sản phẩm có cồn hay không (Mặc định = false)
 
     @Column(name = "image_url", columnDefinition = "LONGTEXT")
     @JsonProperty("image_url")
-    private String imageUrl;
+    private String imageUrl; // URL hình ảnh sản phẩm.
 
     @Column(name = "is_active")
     @JsonProperty("is_active")
-    private Boolean active = true;
+    private Boolean active = true; // Trạng thái hoạt động của sản phẩm.
 
     @ManyToOne
     @JoinColumn(name = "category_id")
     @JsonIgnore // Không trả về cả object Category để tránh vòng lặp JSON
-    private Category category;
+    private Category category; // Category mà sản phẩm thuộc về.
 
-    // Helper method để trả về category_id đúng như frontend cần
+    // Helper method để trả về category_id đúng như frontend cần, không expose toàn bộ Category object.
     @JsonGetter("category_id")
     public Long getCategoryId() {
         return category != null ? category.getId() : null;
     }
 
+    /**
+     * Quan hệ 1-1 với Inventory.
+     * mappedBy = "product": phía Inventory là owner
+     * cascade = ALL:
+     *  - Tạo Product -> tự tạo Inventory (nếu gắn)
+     *  - Xóa Product -> xóa Inventory
+     */
     @OneToOne(mappedBy = "product", cascade = CascadeType.ALL)
-    @JsonIgnore // Inventory thường được quản lý ở API riêng hoặc trả về riêng
+    @JsonIgnore
     private Inventory inventory;
 }

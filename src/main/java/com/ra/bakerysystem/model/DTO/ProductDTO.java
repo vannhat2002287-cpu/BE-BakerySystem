@@ -7,6 +7,13 @@ import com.ra.bakerysystem.common.ProductType;
 import com.ra.bakerysystem.model.entity.Product;
 import lombok.*;
 
+/**
+ * ProductDTO (Data Transfer Object) dùng để:
+ *  - Trả thông tin sản phẩm cho client
+ *  - Tránh expose trực tiếp Product Entity
+ *  - Kiểm soát cấu trúc JSON response
+ */
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -15,24 +22,27 @@ import lombok.*;
 public class ProductDTO {
 
     @JsonProperty("product_id")
-    private Long id;
-
-    private String name;
-    private Integer price;
-    private ProductType type;
+    private Long id;               // ID của sản phẩm.
+    private String name;           // Tên sản phẩm.
+    private Integer price;         // Giá bán của sản phẩm.
+    private ProductType type;      // Loại sản phẩm (FOOD, DRINK, ALCOHOL).
 
     @JsonProperty("is_alcoholic")
-    private Boolean alcoholic;
+    private Boolean alcoholic;     // Đánh dấu sản phẩm có cồn hay không.
 
     @JsonProperty("image_url")
-    private String imageUrl;
+    private String imageUrl;       // URL hình ảnh của sản phẩm.
 
     @JsonProperty("is_active")
-    private Boolean active;
+    private Boolean active;        // Trạng thái hoạt động của sản phẩm.
 
     @JsonProperty("category_id")
-    private Long categoryId;
+    private Long categoryId;       // ID của category mà sản phẩm thuộc về.
 
+    /**
+     * Constructor dùng để convert từ Product Entity sang ProductDTO.
+     * @param product Product entity lấy từ database
+     */
     public ProductDTO(Product product) {
         this.id = product.getId();
         this.name = product.getName();
