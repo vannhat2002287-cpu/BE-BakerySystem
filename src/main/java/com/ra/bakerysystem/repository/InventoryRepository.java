@@ -1,3 +1,4 @@
+// 名前: Tram, Uyen
 package com.ra.bakerysystem.repository;
 
 import com.ra.bakerysystem.model.entity.Inventory;

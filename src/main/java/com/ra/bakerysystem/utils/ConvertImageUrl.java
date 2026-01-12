@@ -1,3 +1,4 @@
+// 名前: Tram
 package com.ra.bakerysystem.utils;
 
 import org.springframework.beans.factory.annotation.Value;
