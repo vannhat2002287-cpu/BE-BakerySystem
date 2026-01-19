@@ -28,17 +28,17 @@ public class OrderItem {
 
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) //Gắn sản phẩm gốc để xử lý nghiệp vụ (inventory, analytics)
     private Product product;
 
     @Column(nullable = false)
     private String name; // Lưu tên sản phẩm tại thời điểm bán (Snapshot)
 
     @Column(nullable = false)
-    private Integer quantity;
+    private Integer quantity; //Số lượng của sản phẩm trong đơn
 
     @Column(name = "unit_price", nullable = false)
-    @JsonProperty("unit_price")
+    @JsonProperty("unit_price") //Giá tại thời điểm bán
     private Integer unitPrice;
 
     // Trả về product_id dưới dạng String để khớp với types.ts

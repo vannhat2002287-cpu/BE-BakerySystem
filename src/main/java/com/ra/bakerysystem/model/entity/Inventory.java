@@ -26,14 +26,14 @@ public class Inventory {
     private Product product;
 
     @Column(name = "current_quantity", nullable = false)
-    private Integer currentQuantity;
+    private Integer currentQuantity; //Số lượng tồn kho hiện tại
 
     @Column(name = "reorder_point", nullable = false)
-    private Integer reorderPoint;
+    private Integer reorderPoint; //Ngưỡng tồn kho tối thiểu
 
     @Column(name = "last_updated")
-    private LocalDateTime lastUpdated;
-
+    private LocalDateTime lastUpdated;//Thời điểm inventory được cập nhật gần nhất
+//Lifecycle callback của JPA, prepersist Gọi trước khi INSERT, PreUpdate Gọi trước khi UPDATE
     @PrePersist
     @PreUpdate
     protected void onUpdate() {

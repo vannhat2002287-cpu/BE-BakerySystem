@@ -62,6 +62,7 @@ public class FactoryRequestController {
             @ApiResponse(responseCode = "200", description = "Success"),
             @ApiResponse(responseCode = "404", description = "Request not found")
     })
+
     public FactoryRequest updateStatus(
             @PathVariable("id") Long requestId,
             @RequestParam FactoryRequestStatus status
