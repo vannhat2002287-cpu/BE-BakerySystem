@@ -52,13 +52,13 @@ public class FactoryRequestServiceImpl implements FactoryRequestService {
 
         inventoryRepository.save(inventory);
 
-        if (request.getDeliveredQuantity() >= request.getRequestQuantity()) {
-            request.setStatus(FactoryRequestStatus.DELIVERED);
-        } else {
+        if (request.getDeliveredQuantity() == 0) {
+            request.setStatus(FactoryRequestStatus.PENDING);
+        } else if (request.getDeliveredQuantity() < request.getRequestQuantity()) {
             request.setStatus(FactoryRequestStatus.PARTIAL);
+        } else {
+            request.setStatus(FactoryRequestStatus.DELIVERED);
         }
-
-        inventoryRepository.save(inventory);
         return factoryRequestRepository.save(request);
     }
 
@@ -130,6 +130,7 @@ public class FactoryRequestServiceImpl implements FactoryRequestService {
                     .deliveredQuantity(0)
                     .status(FactoryRequestStatus.PENDING)
                     .createdAt(LocalDateTime.now())
+                    .etaAt(LocalDateTime.now().plusDays(1)) // ETA mặc định cho request auto / khi FE không truyền
                     .build();
             factoryRequestRepository.save(request);
         }
@@ -146,6 +147,7 @@ public class FactoryRequestServiceImpl implements FactoryRequestService {
                 .productId(product.getId())
                 .productName(product.getName())
                 .requestQuantity(dto.getRequestQuantity())
+                .deliveredQuantity(0)
                 .businessDate(LocalDate.now())
                 .etaAt(dto.getEtaAt())
                 .note(dto.getNote())
