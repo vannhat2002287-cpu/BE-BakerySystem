@@ -17,27 +17,21 @@ import java.time.LocalDateTime;
 public class Inventory {
 
     @Id
-    @Column(name = "product_id")
-    @JsonProperty("product_id") // Khớp với Inventory interface trong types.ts
     private Long productId;
 
-    @OneToOne
     @MapsId
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
-    @JsonIgnore // Không trả về object Product ở đây để tránh vòng lặp JSON
+    @JsonIgnore
     private Product product;
 
     @Column(name = "current_quantity", nullable = false)
-    @JsonProperty("current_quantity")
-    private Integer currentQuantity = 0;
+    private Integer currentQuantity;
 
-    @Column(name = "min_threshold")
-    @JsonProperty("min_threshold")
-    private Integer minThreshold;
+    @Column(name = "reorder_point", nullable = false)
+    private Integer reorderPoint;
 
     @Column(name = "last_updated")
-    @JsonProperty("last_updated")
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") // Khớp định dạng ISO string
     private LocalDateTime lastUpdated;
 
     @PrePersist

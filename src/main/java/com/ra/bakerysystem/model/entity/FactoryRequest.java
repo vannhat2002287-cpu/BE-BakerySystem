@@ -1,11 +1,12 @@
 package com.ra.bakerysystem.model.entity;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.ra.bakerysystem.common.FactoryRequestStatus;
 import jakarta.persistence.*;
 import lombok.*;
-import tools.jackson.databind.PropertyNamingStrategies;
-import tools.jackson.databind.annotation.JsonNaming;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -19,7 +20,7 @@ import java.time.LocalDateTime;
 public class FactoryRequest {
 
     @Id
-    @GeneratedValue (strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "request_id")
     private Long requestId;
 
@@ -32,17 +33,23 @@ public class FactoryRequest {
     @Column(name = "request_quantity", nullable = false)
     private Integer requestQuantity;
 
+    @Column(name = "delivered_quantity", nullable = false)
+    private Integer deliveredQuantity = 0;
+
+    @Column(name = "business_date", nullable = false)
+    private LocalDate businessDate;
+
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "eta_at", nullable = false) // eta = estimate time arrival
+    @Column(name = "eta_at", nullable = false)
     private LocalDateTime etaAt;
 
     @Column(columnDefinition = "TEXT")
     private String note;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "status", nullable = false)
     private FactoryRequestStatus status;
 }
 

@@ -14,20 +14,23 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-/**
- * Quản lý các API liên quan đến Factory Request
- *  - Gửi yêu cầu sản xuất / nhập hàng tới nhà máy
- *  - Theo dõi trạng thái xử lý của các yêu cầu này
- */
-
 @RestController
 @RequestMapping("/api/v1/factory-requests")
 @RequiredArgsConstructor
 @Tag(name = "Factory Request API")
-
 public class FactoryRequestController {
 
     private final FactoryRequestService factoryRequestService;
+
+    // API AUTO (12:00 / 17:00)
+    @PostMapping("/auto")
+    @Operation(summary = "Auto create factory requests (12:00 / 17:00)")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Processed")
+    })
+    public void autoCreateFactoryRequests() {
+        factoryRequestService.autoCreateFactoryRequests();
+    }
 
     // POST /factory-requests
     @PostMapping
@@ -64,5 +67,14 @@ public class FactoryRequestController {
             @RequestParam FactoryRequestStatus status
     ) {
         return factoryRequestService.updateStatus(requestId, status);
+    }
+    // PATCH /api/v1/factory-requests/{id}/receive
+    @PatchMapping("/{id}/receive")
+    @Operation(summary = "Receive products from factory (partial delivery)")
+    public FactoryRequest receive(
+            @PathVariable("id") Long requestId,
+            @RequestParam int quantity
+    ) {
+        return factoryRequestService.receive(requestId, quantity);
     }
 }

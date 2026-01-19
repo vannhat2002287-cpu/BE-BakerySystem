@@ -8,10 +8,7 @@ public interface InventoryRepository extends JpaRepository<Inventory, Long> {
 
      // Đếm số lượng sản phẩm đang ở trạng thái tồn kho thấp
      // Điều kiện: currentQuantity <= minThreshold
-    @Query("""
-        SELECT COUNT(i)
-        FROM Inventory i
-        WHERE i.currentQuantity <= i.minThreshold
-    """)
-    Long countLowStock();
+     @Query("SELECT COUNT(i) FROM Inventory i WHERE i.currentQuantity <= i.reorderPoint")
+     long countLowStock();
+
 }

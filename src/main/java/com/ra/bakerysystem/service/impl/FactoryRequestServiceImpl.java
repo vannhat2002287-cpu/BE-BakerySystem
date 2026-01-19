@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -22,69 +23,136 @@ import java.util.List;
 public class FactoryRequestServiceImpl implements FactoryRequestService {
 
     private final FactoryRequestRepository factoryRequestRepository;
-    private final ProductRepository productRepository;
     private final InventoryRepository inventoryRepository;
+    private final ProductRepository productRepository;
+    private final ProductionCalculationService productionCalculationService;
 
+
+    // RECEIVE (NHẬP KHO THEO GIỜ)
+    @Override
+    public FactoryRequest receive(Long requestId, int quantity) {
+
+        FactoryRequest request = factoryRequestRepository.findById(requestId)
+                .orElseThrow(() -> new RuntimeException("Factory request not found"));
+
+        Inventory inventory = inventoryRepository.findById(request.getProductId())
+                .orElseThrow(() -> new RuntimeException("Inventory not found"));
+
+        int delivered = request.getDeliveredQuantity() == null
+                ? 0
+                : request.getDeliveredQuantity();
+
+        request.setDeliveredQuantity(delivered + quantity);
+
+        inventory.setCurrentQuantity(
+                inventory.getCurrentQuantity() + quantity
+        );
+        // Thêm lastUpdated khi nhập kho
+        inventory.setLastUpdated(LocalDateTime.now());
+
+        inventoryRepository.save(inventory);
+
+        if (request.getDeliveredQuantity() >= request.getRequestQuantity()) {
+            request.setStatus(FactoryRequestStatus.DELIVERED);
+        } else {
+            request.setStatus(FactoryRequestStatus.PARTIAL);
+        }
+
+        inventoryRepository.save(inventory);
+        return factoryRequestRepository.save(request);
+    }
+
+    // ===================== GET ALL =====================
+    @Override
+    public List<FactoryRequest> getAll() {
+        return factoryRequestRepository.findAll();
+    }
+
+    // ===================== UPDATE STATUS =====================
+    /**
+     * Cập nhật trạng thái của Factory Request.
+     *
+     * Lưu ý:
+     * - Method này CHỈ cập nhật trạng thái.
+     * - KHÔNG xử lý nhập kho.
+     * - Nhập kho được thực hiện thông qua method receive().
+     */
+    @Override
+    public FactoryRequest updateStatus(Long requestId, FactoryRequestStatus status) {
+
+        FactoryRequest request = factoryRequestRepository.findById(requestId)
+                .orElseThrow(() -> new RuntimeException("Factory request not found"));
+
+        request.setStatus(status);
+        return factoryRequestRepository.save(request);
+    }
+
+    // AUTO CREATE (12:00 / 17:00)
+    @Override
+    public void autoCreateFactoryRequests() {
+
+        LocalDate today = LocalDate.now();
+        List<Product> products = productRepository.findAll();
+
+        for (Product product : products) {
+
+            Inventory inventory = inventoryRepository.findById(product.getId())
+                    .orElse(null);
+            if (inventory == null) continue;
+
+            if (inventory.getCurrentQuantity() >= inventory.getReorderPoint()) {
+                continue;
+            }
+
+            boolean hasPending =
+                    factoryRequestRepository
+                            .existsByProductIdAndBusinessDateAndStatusIn(
+                                    product.getId(),
+                                    today,
+                                    List.of(
+                                            FactoryRequestStatus.PENDING,
+                                            FactoryRequestStatus.PARTIAL
+                                    )
+                            );
+
+            if (hasPending) continue;
+
+            int qty = productionCalculationService.calculateProductionQuantity(
+                    product.getId(),
+                    today
+            );
+
+            FactoryRequest request = FactoryRequest.builder()
+                    .productId(product.getId())
+                    .productName(product.getName())
+                    .businessDate(today)
+                    .requestQuantity(Math.max(qty, 10)) // QA rule: min 10
+                    .deliveredQuantity(0)
+                    .status(FactoryRequestStatus.PENDING)
+                    .createdAt(LocalDateTime.now())
+                    .build();
+            factoryRequestRepository.save(request);
+        }
+    }
+
+    //  CREATE (MANUAL – GIỮ LẠI)
     @Override
     public FactoryRequest create(FactoryRequestDTO dto) {
 
-        // Lấy thông tin product
         Product product = productRepository.findById(dto.getProductId())
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
-        // Tạo mới FactoryRequest entity
         FactoryRequest request = FactoryRequest.builder()
                 .productId(product.getId())
                 .productName(product.getName())
                 .requestQuantity(dto.getRequestQuantity())
+                .businessDate(LocalDate.now())
                 .etaAt(dto.getEtaAt())
                 .note(dto.getNote())
                 .status(FactoryRequestStatus.PENDING)
                 .createdAt(LocalDateTime.now())
                 .build();
 
-        // Lưu factory request vào database
-        return factoryRequestRepository.save(request);
-    }
-
-    @Override
-    public List<FactoryRequest> getAll() {
-        return factoryRequestRepository.findAll();
-    }
-
-
-    /**
-     * Cập nhật trạng thái của Factory Request
-     *  - Khi trạng thái được cập nhật sang DELIVERED
-     *  - Và trạng thái trước đó KHÔNG phải DELIVERED
-     *  => hệ thống sẽ tự động cộng số lượng vào Inventory
-     */
-    @Override
-    public FactoryRequest updateStatus(Long requestId, FactoryRequestStatus status) {
-        // Lấy factory request theo id
-        FactoryRequest request = factoryRequestRepository.findById(requestId)
-                .orElseThrow(() -> new RuntimeException("Factory request not found"));
-
-        // // Logic khi nhận hàng từ nhà máy
-        if (status == FactoryRequestStatus.DELIVERED
-                && request.getStatus() != FactoryRequestStatus.DELIVERED) {
-
-            // Lấy inventory tương ứng với product
-            Inventory inventory = inventoryRepository.findById(request.getProductId())
-                    .orElseThrow(() -> new RuntimeException("Inventory not found"));
-
-            // Cộng thêm số lượng vào tồn kho
-            inventory.setCurrentQuantity(
-                    inventory.getCurrentQuantity() + request.getRequestQuantity()
-            );
-
-            // Lưu lại inventory
-            inventoryRepository.save(inventory);
-        }
-
-        // Cập nhật trạng thái request
-        request.setStatus(status);
-        // Lưu lại factory request
         return factoryRequestRepository.save(request);
     }
 }

@@ -12,5 +12,8 @@ public interface FactoryRequestService {
     List<FactoryRequest> getAll();
 
     FactoryRequest updateStatus(Long id, FactoryRequestStatus status);
+    FactoryRequest receive(Long requestId, int quantity);
+
+    void autoCreateFactoryRequests();
 }
 
