@@ -4,10 +4,12 @@ import com.ra.bakerysystem.model.DTO.InventoryDTO;
 import com.ra.bakerysystem.model.entity.Inventory;
 import com.ra.bakerysystem.repository.InventoryRepository;
 import com.ra.bakerysystem.service.InventoryService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -15,6 +17,16 @@ import java.util.List;
 public class InventoryServiceImpl implements InventoryService {
 
     private final InventoryRepository inventoryRepository;
+    @Override
+    @Transactional
+    public void resetDailyInventory(List<Long> productIds) {
+        List<Inventory> inventories = inventoryRepository.findAllById(productIds);
+        for (Inventory inv : inventories) {
+            inv.setCurrentQuantity(20); //set default_quantity = 20
+            inv.setLastUpdated(LocalDateTime.now());
+        }
+        inventoryRepository.saveAll(inventories);
+    }
 
     @Override
     public List<Inventory> getAllInventory() {

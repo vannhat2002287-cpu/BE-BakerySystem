@@ -1,6 +1,7 @@
 package com.ra.bakerysystem.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
@@ -25,6 +26,9 @@ public class Inventory {
     @JsonIgnore
     private Product product;
 
+    @Column(name = "default_quantity")
+    private Integer defaultQuantity;
+
     @Column(name = "current_quantity", nullable = false)
     private Integer currentQuantity; //Số lượng tồn kho hiện tại
 
@@ -33,6 +37,11 @@ public class Inventory {
 
     @Column(name = "last_updated")
     private LocalDateTime lastUpdated;//Thời điểm inventory được cập nhật gần nhất
+    //map FE dùng field default_quantity
+    @JsonProperty("default_quantity")
+    public Integer getDefaultQuantity() {
+        return currentQuantity;
+    }
 //Lifecycle callback của JPA, prepersist Gọi trước khi INSERT, PreUpdate Gọi trước khi UPDATE
     @PrePersist
     @PreUpdate
