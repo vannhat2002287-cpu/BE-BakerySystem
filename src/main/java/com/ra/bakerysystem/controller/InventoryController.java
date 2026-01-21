@@ -17,12 +17,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-/**
- * Quản lý các API liên quan đến Inventory (tồn kho)
- *  - Xem danh sách tồn kho
- *  - Điều chỉnh số lượng tồn kho của sản phẩm
- *  - Reset tồn kho về default quantity
- */
 @Slf4j
 @RestController
 @RequestMapping("/api/v1/inventory")
@@ -34,9 +28,6 @@ public class InventoryController {
 
     /**
      * Reset tồn kho hằng ngày
-     * - Nhận danh sách productIds từ FE
-     * - Set currentQuantity = default (20)
-     * - Update lastUpdated = now
      */
     @PostMapping("/reset-daily")
     @Operation(summary = "Reset inventory to default quantity")
@@ -47,6 +38,37 @@ public class InventoryController {
             @RequestBody InventoryResetRequestDTO request
     ) {
         inventoryService.resetDailyInventory(request.getProductIds());
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * API chính – điều chỉnh tồn kho theo productId (FE dùng cái này)
+     * PATCH /api/v1/inventory/{productId}?currentQuantity=10
+     */
+    @PatchMapping("/{productId}")
+    @Operation(summary = "Adjust inventory quantity")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "404", description = "Product not found")
+    })
+    public Inventory adjustInventory(
+            @PathVariable Long productId,
+            @RequestParam(name = "currentQuantity") Integer currentQuantity
+    ) {
+        log.info("Adjust inventory: productId={}, quantity={}", productId, currentQuantity);
+        return inventoryService.adjustInventory(productId, currentQuantity);
+    }
+
+    /**
+     * Fallback API – khi FE gửi productId = undefined
+     * PATCH /api/v1/inventory/undefined?currentQuantity=66
+     */
+    @PatchMapping("/undefined")
+    public ResponseEntity<?> adjustInventoryWhenUndefined(
+            @RequestParam(name = "currentQuantity", required = false) Integer currentQuantity
+    ) {
+        log.warn("FE sent productId=undefined, inventory adjust skipped. quantity={}", currentQuantity);
+        // Không làm gì, chỉ cho FE đi tiếp
         return ResponseEntity.ok().build();
     }
 
@@ -70,22 +92,5 @@ public class InventoryController {
                     return map;
                 })
                 .toList();
-    }
-
-    /**
-     * Điều chỉnh số lượng tồn kho thủ công
-     */
-    @PatchMapping("/{productId}")
-    @Operation(summary = "Adjust inventory quantity")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Success"),
-            @ApiResponse(responseCode = "404", description = "Product not found")
-    })
-    public Inventory adjustInventory(
-            @PathVariable Long productId,
-            @RequestParam(name = "currentQuantity", defaultValue = "0") Integer currentQuantity
-    ) {
-        log.info("Adjusting inventory quantity for product {}: {}", productId, currentQuantity);
-        return inventoryService.adjustInventory(productId, currentQuantity);
     }
 }
